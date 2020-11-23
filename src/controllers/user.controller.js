@@ -8,11 +8,8 @@ class ControllerUser {
     createUser = async(req, res) => {
         try {
             const user = new modelUser(req.body)
-            console.log(user)
-            //user.token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY)
-
+            user.token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY)
             await user.encryptPassword()
-                // await user.encryptIp()
             const savedUser = await user.save()
             res.status(200).json(user)
         } catch (error) {
@@ -20,33 +17,27 @@ class ControllerUser {
             res.status(401).json(error)
         }
     }
-    login = async(req, res) => {
-        try {
-            const [users] = await modelUser.find({ mail: req.body.mail })
-            const validate = await users.comparePassword(req.body.password)
-            if (validate) {
-                res.status(200).json(users)
-            } else {
-                res.status(200).json("Error en password")
-            }
-        } catch (error) {
-            res.status(400).json(error.menssage)
-        }
 
 
-    }
     loginUsers = async(req, res) => {
         try {
+            //const user = req.user
             const datos = createSearchParams(req.query)
-            const [user] = await modelUser.find({ name: 'John' });
-            const validate = await
-            await user.comparePassword(datos.password)
+            const user = req.user
+            if (user) {
+                const validate = await user.comparePassword(datos.password)
+                    //await user.comparePassword(datos.password)
 
-            if (validate) {
-                res.status(200).json(user)
+                if (validate) {
+                    console.log("todo esta bien" + validate);
+                    res.status(200).json(user)
+                } else {
+                    res.status(200).json("Error en password")
+                }
             } else {
-                res.status(200).json("Error en password")
+                res.status(200).json("No se encontro al usuario")
             }
+
         } catch (error) {
             console.log(error);
         }
