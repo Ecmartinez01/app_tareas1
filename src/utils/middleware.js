@@ -2,6 +2,7 @@ const modelUser = require("../models/user.model")
 const jwt = require("jsonwebtoken")
 
 const authMiddleware = async function(req, res, next) {
+    console.log(" en el Middleware ");
     const token = req.headers["authentication"] ? req.headers["authentication"].replace("cats ", "") : null
     try {
         const userId = jwt.verify(token, process.env.SECRET_KEY)

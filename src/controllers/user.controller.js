@@ -5,8 +5,11 @@ const createSearchParams = require("../utils/createSearchParams")
 
 
 class ControllerUser {
+
     createUser = async(req, res) => {
         try {
+            console.log(" Creando usuario");
+            console.log(req.body);
             const user = new modelUser(req.body)
             user.token = jwt.sign({ userId: user._id }, process.env.SECRET_KEY)
             await user.encryptPassword()
@@ -24,6 +27,8 @@ class ControllerUser {
             //const user = req.user
             const datos = createSearchParams(req.query)
             const user = req.user
+            console.log(" Validando usuario");
+            console.log(user);
             if (user) {
                 const validate = await user.comparePassword(datos.password)
                     //await user.comparePassword(datos.password)
